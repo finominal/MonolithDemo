@@ -73,7 +73,8 @@ LED(6,14),LED(6,15),LED(6,16),LED(7,16),LED(7,15),LED(7,14),LED(7,13),LED(7,12),
 LED(7,3),LED(7,2),LED(7,1),LED(7,0)
 };
 
-
+int SENSOR0 = 17;
+int SENSOR1 = 23;
 
 void setup()
 {
@@ -81,8 +82,10 @@ void setup()
   strip.begin();
   pinMode(13,OUTPUT);
   
-  pinMode(17,INPUT);
-  pinMode(18,INPUT);
+  pinMode(SENSOR0,INPUT);
+  pinMode(SENSOR1,INPUT);
+  digitalWrite(SENSOR0, HIGH);
+  digitalWrite(SENSOR1, HIGH);
   
   FlashLed(500);
 
@@ -98,10 +101,11 @@ void loop()
 
 void DecidePlasma()
 {
+
    if(sensors[0] == LOW && sensors[1] == HIGH)
   {
     Serial.println("1");
-    circleLoc[0] =  worldWidth;
+    circleLoc[0] = worldWidth;
     circleLoc[1] = worldHeight;
     circle = true;
     
@@ -161,11 +165,13 @@ void Plasma()
    
     //g = map( sinShadePiGreen, minShade, maxShade, 0, brightness);//2ms
     r = map( sinShadePiRed, minShade, maxShade, 0, brightness);//2ms
+     g = 0;
+     b=0;
  }
  else
  {
     //r = map( sinShadePiRed, minShade, maxShade, 0, brightness);//2ms
-  
+  r=0;
     //r = map( sin(shade*PI)*100, minShade, maxShade, 0, brightness);
     g = map( sin(shade*PI+2*PI*sin(movement/23))*100, minShade, maxShade, 0, brightness);
     b = map( sin(shade*PI+4*PI*sin(movement/20))*100, minShade, maxShade, 0, brightness);
@@ -239,6 +245,10 @@ void ReadSensors()
 {
   sensors[0] = digitalRead(17);
   sensors[1] = digitalRead(18);
+  
+    Serial.print("s0="); Serial.print(sensors[0]);
+  Serial.print(",s1="); Serial.println(sensors[1]);
+  
 }
 
 void FlashLed(int wait)
